@@ -8,7 +8,7 @@ const BookAuthors = require("./models/book_author")
 const BookCategories = require("./models/book_category")
 
 // createTables()
-// readData()
+readData()
 
 async function createTables(){
     await db.sync({ force: true })
@@ -24,7 +24,6 @@ function readData(){
         readBooks(data)
     }catch(err){
         console.log(err)
-        return;
     }
 }
 
