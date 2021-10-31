@@ -1,5 +1,6 @@
 const Book = require("../models/book")
 const {Op} = require("sequelize");
+const Category = require("../models/category");
 
 exports.create = (req, res) => {
     if (!req.body.title && !req.body.isbn) {
@@ -60,40 +61,41 @@ exports.update = (req, res) => {
         return
     }
 
-    Book.update(
-        {name: req.body.title},
-        {name: req.body.title},
-        {isbn: req.body.isbn},
-        {shortDescription: req.body.shortDescription},
-        {longDescription: req.body.longDescription},
-        {publishedDate: req.body.publishedDate},
-        {where: {id: req.params.id}}).then(() => {
-        if (res.statusCode === 200) {
-            res.status(200).send({message: "Book updated successfully."})
-        } else {
-            res.status(500).send({message: "Some error occurred while updating the book."})
+    const book =
+        {
+            name: req.body.title,
+            isbn: req.body.isbn,
+            pageCount: req.body.pageCount,
+            shortDescription: req.body.shortDescription,
+            longDescription: req.body.longDescription,
+            publishedDate: req.body.publishedDate
         }
+
+
+    Book.update(book, {where: {id: req.params.id}}).then(() => {
+        Book.findOne({where: {id: req.params.id}}).then(data => {
+            res.send(data)
+        })
     }).catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occurred while creating the new book."
+            message: err.message || "Some error occurred while updating the book."
         })
     })
 }
 
 exports.delete = (req, res) => {
-    Book.destroy({where: {id: req.params.id}})
-        .then(data => {
-            if (data === 1) {
-                res.status(200).send({message: "Book deleted successfully."})
-            } else {
-                res.status(500).send({message: "Some error occurred while deleting the book."})
-            }
+    Book.findOne({where: {id: req.params.id}}).then(data => {
+        Book.destroy({where: {id: req.params.id}})
+        if (data !== null) {
+            res.send(data)
+        } else {
+            res.status(404).send()
+        }
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while deleting the book."
         })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while deleting the book."
-            })
-        })
+    })
 }
 
 exports.findAllByName = (req, res) => {

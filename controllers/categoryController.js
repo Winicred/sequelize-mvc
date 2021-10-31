@@ -1,6 +1,16 @@
 const Category = require("../models/category")
 const {Op} = require("sequelize");
 
+exports.findAll = (req, res) => {
+    Category.findAll().then(data => {
+        res.send(data)
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving categories."
+        })
+    })
+}
+
 exports.create = (req, res) => {
     if (!req.body.name) {
         res.status(400).send({
@@ -17,17 +27,7 @@ exports.create = (req, res) => {
         res.send(data)
     }).catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occurred while creating the Category."
-        })
-    })
-}
-
-exports.findAll = (req, res) => {
-    Category.findAll().then(data => {
-        res.send(data)
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving categories."
+            message: err.message || "Some error occurred while creating the сategory."
         })
     })
 }
@@ -37,7 +37,7 @@ exports.findOneById = (req, res) => {
         if (data !== null) {
             res.send(data)
         } else {
-            res.status(204).send()
+            res.status(404).send()
         }
     }).catch(err => {
         res.status(500).send({
@@ -55,32 +55,29 @@ exports.update = (req, res) => {
     }
 
     Category.update({name: req.body.name}, {where: {id: req.params.id}}).then(() => {
-        if (res.statusCode === 200) {
-            res.status(200).send({message: "Category updated successfully."})
-        } else {
-            res.status(500).send({message: "Some error occurred while updating the category."})
-        }
+        Category.findOne({where: {id: req.params.id}}).then(data => {
+            res.send(data)
+        })
     }).catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occurred while creating the new category."
+            message: err.message || "Some error occurred while updating the category."
         })
     })
 }
 
 exports.delete = (req, res) => {
-    Category.destroy({where: {id: req.params.id}})
-        .then(data => {
-            if (data === 1) {
-                res.status(200).send({message: "Category deleted successfully."})
-            } else {
-                res.status(500).send({message: "Some error occurred while deleting the category."})
-            }
+    Category.findOne({where: {id: req.params.id}}).then(data => {
+        Category.destroy({where: {id: req.params.id}})
+        if (data !== null) {
+            res.send(data)
+        } else {
+            res.status(404).send()
+        }
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while deleting the category."
         })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while deleting the category."
-            })
-        })
+    })
 }
 
 exports.findAllByName = (req, res) => {
@@ -88,7 +85,7 @@ exports.findAllByName = (req, res) => {
         if (data.length !== 0) {
             res.send(data)
         } else {
-            res.status(204).send()
+            res.status(404).send()
         }
     }).catch(err => {
         res.status(500).send({

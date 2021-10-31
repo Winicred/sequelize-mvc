@@ -13,7 +13,9 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.get("/", (req, res) => {
-    res.json({message: "Welcome to library RESTful API."})
+    res.render('index.hbs', {
+        message: "Welcome to library RESTful API."
+    })
 })
 
 require("./routes/categoryRoutes")(app)
@@ -26,7 +28,7 @@ const options = {
         info: {
             title: "Library Example Express API with Swagger",
             version: "0.1.0",
-            description: "This is a simple CRUD API application made with Express and documented with Swagger"
+            description: "This is a simple `CRUD API` application made with Express and documented with Swagger \n "
         },
         tags: [
             {

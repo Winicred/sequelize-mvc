@@ -9,15 +9,15 @@
  *              properties:
  *                  id:
  *                      type: integer
- *                      description: The auto-generated id of the author.
+ *                      description: The auto-generated ID of the author.
  *                  name:
  *                      type: string
  *                      description: The fullname of author.
  *              example:
+ *                  id: 1
  *                  name: Kirill Goritski
  */
 
-const category = require("../controllers/categoryController");
 module.exports = app => {
     const authors = require("../controllers/authorsController")
     const router = require("express").Router()
@@ -29,23 +29,24 @@ module.exports = app => {
     *          tags:
     *          - authors
     *          summary: Retrieve a list of authors.
-    *          description: Retrieve a list of authors
     *          responses:
     *              200:
-    *                  description: A list of authors
-    *                  content:
-    *                      application/json:
-    *                          schema:
-    *                               type: object
-    *                               properties:
-    *                                   id:
-    *                                       type: integer
-    *                                       description: The author ID.
-    *                                       example: 1
-    *                                   name:
-    *                                       type: string
-    *                                       description: The author's fullname
-    *                                       example: Kirill Goritski
+    *                  description: Success
+     *                  content:
+     *                      application/json:
+     *                          schema:
+     *                              required:
+     *                                - name
+     *                              type: object
+     *                              properties:
+     *                                  id:
+     *                                      type: integer
+     *                                      description: The auto-generated ID of the author.
+     *                                      example: 1
+     *                                  name:
+     *                                      type: string
+     *                                      description: The author's name.
+     *                                      example: Kirill Goritski
     */
     
     router.get("/", authors.findAll)
@@ -57,8 +58,7 @@ module.exports = app => {
      *      get:
      *          tags:
      *          - authors
-     *          summary: Retrieve a single author by ID.
-     *          description: Retrieve a single author by ID
+     *          summary: Retrieve the author by ID.
      *          parameters:
      *            - in: path
      *              name: id
@@ -68,69 +68,69 @@ module.exports = app => {
      *              description: Numeric ID of the author to get
      *          responses:
      *              200:
-     *                  description: Numeric ID of the author to get
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The author ID.
+     *                                      description: The auto-generated ID of the author.
      *                                      example: 1
      *                                  name:
      *                                      type: string
-     *                                      description: The author's fullname
+     *                                      description: The author's name.
      *                                      example: Kirill Goritski
+     *              404:
+     *                  description: Not found
      */
 
     router.get("/:id", authors.findOneById)
 
     /**
-    * @swagger
-    * /api/authors:
-    *      post:
-    *          tags:
-    *          - authors
-    *          summary: Add a new author to the database.
-    *          description: Add a new author to the database
-    *          requestBody:
-    *              required: true
-    *              content:
-    *                  application/json:
-    *                      schema:
-    *                          type: object
-    *                          properties:
-    *                              name:
-    *                                  type: string
-    *                                  description: The author's fullname.
-    *                                  example: Kirill Goritski
-    *          responses:
-    *              200:
-    *                  description: Author has been created successfully
-    *                  content:
-    *                      application/json:
-    *                          schema:
-    *                              type: object
-    *                              properties:
-    *                                  id:
-    *                                      type: integer
-    *                                      description: The author ID
-    *                                      example: 1
-    *                                  name:
-    *                                      type: string
-    *                                      description: The author's fullname
-    *                                      example: Kirill Goritski
-    *              400:
-    *                  description: Empty content
-    *                  content:
-    *                      application/json:
-    *                          schema:
-    *                              type: object
-    *                              properties:
-    *                                  message:
-    *                                      example: Content can not be empty!
-    */
+     * @swagger
+     * /api/authors:
+     *      post:
+     *          tags:
+     *          - authors
+     *          summary: Add a new author to the database.
+     *          requestBody:
+     *              required: true
+     *              content:
+     *                  application/json:
+     *                      schema:
+     *                          required:
+     *                            - name
+     *                          type: object
+     *                          properties:
+     *                              name:
+     *                                  type: string
+     *                                  description: The author's fullname.
+     *                                  example: Kirill Goritski
+     *          responses:
+     *              200:
+     *                  description: Success
+     *                  content:
+     *                      application/json:
+     *                          schema:
+     *                              required:
+     *                                - name
+     *                              type: object
+     *                              properties:
+     *                                  id:
+     *                                      type: integer
+     *                                      description: The auto-generated ID of the author.
+     *                                      example: 1
+     *                                  name:
+     *                                      type: string
+     *                                      description: The author's name.
+     *                                      example: Kirill Goritski
+     *              400:
+     *                  description: Invalid input
+     */
 
     router.post("/", authors.create)
 
@@ -143,7 +143,6 @@ module.exports = app => {
      *          consumes:
      *            - application/json
      *          summary: Update the author data by ID.
-     *          description: Update the author data by ID
      *          parameters:
      *            - in: path
      *              name: id
@@ -164,16 +163,26 @@ module.exports = app => {
      *                                  example: Kirill Goritski
      *          responses:
      *              200:
-     *                  description: Numeric ID of the author to update
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
-     *                                  message:
-     *                                      example: Author updated successfully
-     *              204:
-     *                  description: No content
+     *                                  id:
+     *                                      type: integer
+     *                                      description: The auto-generated ID of the author.
+     *                                      example: 1
+     *                                  name:
+     *                                      type: string
+     *                                      description: The author's name.
+     *                                      example: Kirill Goritski
+     *              400:
+     *                  description: Invalid status supplier
+     *              404:
+     *                  description: Not found
      */
 
     router.put("/:id", authors.update)
@@ -184,8 +193,7 @@ module.exports = app => {
      *      delete:
      *          tags:
      *          - authors
-     *          summary: Retrieve a single author by ID.
-     *          description: Retrieve a single author by ID
+     *          summary: Delete the author by ID.
      *          parameters:
      *            - in: path
      *              name: id
@@ -195,27 +203,26 @@ module.exports = app => {
      *              description: Numeric ID of the user to get
      *          responses:
      *              200:
-     *                  description: Author deleted successfully
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
-     *                                  message:
+     *                                  id:
+     *                                      type: integer
+     *                                      description: The auto-generated ID of the author.
+     *                                      example: 1
+     *                                  name:
      *                                      type: string
-     *                                      description: HTTP status.
-     *                                      example: Author deleted successfully.
-     *              500:
-     *                  description: Some error occurred while deleting the author
-     *                  content:
-     *                      application/json:
-     *                          schema:
-     *                              type: object
-     *                              properties:
-     *                                  message:
-     *                                      type: string
-     *                                      description: HTTP status.
-     *                                      example: Some error occurred while deleting the author.
+     *                                      description: The author's name.
+     *                                      example: Kirill Goritski
+     *              400:
+     *                  description: Invalid status supplier
+     *              404:
+     *                  description: Not found
      */
 
     router.delete("/:id", authors.delete)
@@ -227,8 +234,7 @@ module.exports = app => {
      *      get:
      *          tags:
      *          - authors
-     *          summary: Retrieve a author(s) by name.
-     *          description: Retrieve a author(s) by name
+     *          summary: Retrieve author(s) by name.
      *          parameters:
      *            - in: path
      *              name: name
@@ -238,22 +244,26 @@ module.exports = app => {
      *              description: Author(s) to get by name
      *          responses:
      *              200:
-     *                  description: Author(s) to get
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The author ID.
+     *                                      description: The auto-generated ID of the author.
      *                                      example: 1
      *                                  name:
      *                                      type: string
-     *                                      description: The author(s) name
+     *                                      description: The author's name.
      *                                      example: Kirill Goritski
-     *              204:
-     *                  description: No Content
+     *              400:
+     *                  description: Invalid status value
+     *              404:
+     *                  description: Not found
      */
 
     router.get("/findAllByName/:name", authors.findAllByName)

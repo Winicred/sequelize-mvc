@@ -9,12 +9,13 @@
  *              properties:
  *                  id:
  *                      type: integer
- *                      description: The auto-generated id of the category.
+ *                      description: The auto-generated ID of the category.
  *                  name:
  *                      type: string
  *                      description: The name of category.
  *              example:
- *                  name: RESTful API
+ *                  id: 1
+ *                  name: Java
  */
 
 module.exports = app => {
@@ -28,23 +29,24 @@ module.exports = app => {
      *          tags:
      *          - categories
      *          summary: Retrieve a list of categories.
-     *          description: Retrieve a list of categories
      *          responses:
      *              200:
-     *                  description: A list of categories
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
-     *                               type: object
-     *                               properties:
-     *                                   id:
-     *                                       type: integer
-     *                                       description: The author ID.
-     *                                       example: 1
-     *                                   name:
-     *                                       type: string
-     *                                       description: The categories name
-     *                                       example: Java
+     *                              required:
+     *                                - name
+     *                              type: object
+     *                              properties:
+     *                                  id:
+     *                                      type: integer
+     *                                      description: The auto-generated ID of the category.
+     *                                      example: 1
+     *                                  name:
+     *                                      type: string
+     *                                      description: The name of category.
+     *                                      example: Java
      */
 
     router.get("/", category.findAll)
@@ -55,8 +57,7 @@ module.exports = app => {
      *      get:
      *          tags:
      *          - categories
-     *          summary: Retrieve a category by ID.
-     *          description: Retrieve a category by ID
+     *          summary: Retrieve the category by ID.
      *          parameters:
      *            - in: path
      *              name: id
@@ -66,22 +67,24 @@ module.exports = app => {
      *              description: Numeric ID of the category to get
      *          responses:
      *              200:
-     *                  description: Numeric ID of the category to get
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The category ID.
+     *                                      description: The auto-generated ID of the category.
      *                                      example: 1
      *                                  name:
      *                                      type: string
-     *                                      description: The categories name
+     *                                      description: The name of category.
      *                                      example: Java
-     *              204:
-     *                  description: No Content
+     *              404:
+     *                  description: Not found
      */
 
     router.get("/:id", category.findOneById)
@@ -93,43 +96,39 @@ module.exports = app => {
      *          tags:
      *          - categories
      *          summary: Add a new category to the database.
-     *          description: Add a new category to the database
      *          requestBody:
      *              required: true
      *              content:
      *                  application/json:
      *                      schema:
+     *                          required:
+     *                            - name
      *                          type: object
      *                          properties:
      *                              name:
      *                                  type: string
-     *                                  description: The category name
-     *                                  example: Python
+     *                                  description: The category name.
+     *                                  example: Java
      *          responses:
      *              200:
-     *                  description: Category has been created successfully
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The author ID
+     *                                      description: The auto-generated ID of the category.
      *                                      example: 1
      *                                  name:
      *                                      type: string
-     *                                      description: The category name
-     *                                      example: Python
+     *                                      description: The name of category.
+     *                                      example: Java
      *              400:
-     *                  description: Empty content
-     *                  content:
-     *                      application/json:
-     *                          schema:
-     *                              type: object
-     *                              properties:
-     *                                  message:
-     *                                      example: Content can not be empty!
+     *                  description: Invalid input
      */
 
     router.post("/", category.create)
@@ -143,7 +142,6 @@ module.exports = app => {
      *          consumes:
      *            - application/json
      *          summary: Update the category data by ID.
-     *          description: Update the category data by ID
      *          parameters:
      *            - in: path
      *              name: id
@@ -153,31 +151,37 @@ module.exports = app => {
      *              description: Numeric ID of the category to update
      *          requestBody:
      *              required: true
-     *              content:
-     *                  application/json:
-     *                      schema:
-     *                          type: object
-     *                          properties:
-     *                              name:
-     *                                  type: string
-     *                                  description: The category name.
-     *                                  example: Java
+     *              schema:
+     *                  required:
+     *                    - name
+     *                  type: object
+     *                  properties:
+     *                      name:
+     *                          type: string
+     *                          description: The category name.
+     *                          example: Java
      *          responses:
      *              200:
-     *                  description: Numeric ID of the category to update
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The category ID.
+     *                                      description: The auto-generated ID of the category.
      *                                      example: 1
      *                                  name:
      *                                      type: string
-     *                                      description: The category name
-     *                                      example: PHP
+     *                                      description: The name of category.
+     *                                      example: Java
+     *              400:
+     *                  description: Invalid input
+     *              404:
+     *                  description: Not found
      */
 
     router.put("/:id", category.update)
@@ -188,8 +192,7 @@ module.exports = app => {
      *      delete:
      *          tags:
      *          - categories
-     *          summary: Retrieve a category by ID.
-     *          description: Retrieve a category by ID
+     *          summary: Delete the category by ID.
      *          parameters:
      *            - in: path
      *              name: id
@@ -199,27 +202,24 @@ module.exports = app => {
      *              description: Numeric ID of the category to get
      *          responses:
      *              200:
-     *                  description: Category deleted successfully
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
-     *                                  message:
+     *                                  id:
+     *                                      type: integer
+     *                                      description: The auto-generated ID of the category.
+     *                                      example: 1
+     *                                  name:
      *                                      type: string
-     *                                      description: HTTP status.
-     *                                      example: Category deleted successfully.
-     *              500:
-     *                  description: Some error occurred while deleting the category
-     *                  content:
-     *                      application/json:
-     *                          schema:
-     *                              type: object
-     *                              properties:
-     *                                  message:
-     *                                      type: string
-     *                                      description: HTTP status.
-     *                                      example: Some error occurred while deleting the category.
+     *                                      description: The name of category.
+     *                                      example: Java
+     *              404:
+     *                  description: Not found
      */
 
     router.delete("/:id", category.delete)
@@ -230,8 +230,7 @@ module.exports = app => {
      *      get:
      *          tags:
      *          - categories
-     *          summary: Retrieve a category(ies) by name.
-     *          description: Retrieve a category(ies) by name
+     *          summary: Retrieve category(ies) by name.
      *          parameters:
      *            - in: path
      *              name: name
@@ -241,22 +240,24 @@ module.exports = app => {
      *              description: Category(ies) to get by name
      *          responses:
      *              200:
-     *                  description: Category(ies) to get
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - name
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The category ID.
+     *                                      description: The auto-generated ID of the category.
      *                                      example: 1
      *                                  name:
      *                                      type: string
-     *                                      description: The categories name
+     *                                      description: The name of category.
      *                                      example: Java
-     *              204:
-     *                  description: No Content
+     *              404:
+     *                  description: Not found
      */
 
     router.get("/findAllByName/:name", category.findAllByName)

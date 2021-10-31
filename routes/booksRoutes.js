@@ -10,7 +10,7 @@
  *              properties:
  *                  id:
  *                      type: integer
- *                      description: The book ID
+ *                      description: The auto-generated ID of the book.
  *                      example: 1
  *                  title:
  *                      type: string
@@ -26,7 +26,7 @@
  *                      example: 416
  *                  shortDescription:
  *                      type: string
- *                      description: The book short description
+ *                      description: The book short description..
  *                      example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
  *                  longDescription:
  *                      type: string
@@ -37,7 +37,13 @@
  *                      description: The book published date.
  *                      example: 2009-04-01T07:00:00.000Z
  *              example:
- *                  name: Unlocking Android
+ *                  id: 1
+ *                  title: Unlocking Android
+ *                  isbn: 1933988673
+ *                  pageCount: 416
+ *                  shortDescription: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
+ *                  longDescription: Android is an open source mobile phone platform based on the Linux operating system and developed by the Open Handset Alliance, a consortium of over 30 hardware, software and telecom companies that focus on open standards for mobile devices. Led by search giant, Google, Android is designed to deliver a better and more open and cost effective mobile experience.    Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical and useful examples throughout. Based on his mobile development experience and his deep knowledge of the arcane Android technical documentation, the author conveys the know-how you need to develop practical applications that build upon or replace any of Androids features, however small.    Unlocking Android - A Developer's Guide prepares the reader to embrace the platform in easy-to-understand language and builds on this foundation with re-usable Java code examples. It is ideal for corporate and hobbyists alike who have an interest, or a mandate, to deliver software functionality for cell phones.    WHAT'S INSIDE        # Android's place in the market      # Using the Eclipse environment for Android development      # The Intents - how and why they are used      # Application classes            o Activity            o Service            o IntentReceiver       # User interface design      # Using the ContentProvider to manage data      # Persisting data with the SQLite database      # Networking examples      # Telephony applications      # Notification methods      # OpenGL, animation & multimedia      # Sample Applications
+ *                  publishedDate: 2009-04-01T07:00:00.000Z
  */
 
 module.exports = app => {
@@ -51,18 +57,20 @@ module.exports = app => {
      *          tags:
      *          - books
      *          summary: Retrieve a list of books.
-     *          description: Retrieve a list of books
      *          responses:
      *              200:
-     *                  description: A list of books
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - title
+     *                                - isbn
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The book ID
+     *                                      description: The auto-generated ID of the book.
      *                                      example: 1
      *                                  title:
      *                                      type: string
@@ -78,7 +86,7 @@ module.exports = app => {
      *                                      example: 416
      *                                  shortDescription:
      *                                      type: string
-     *                                      description: The book short description
+     *                                      description: The book short description.
      *                                      example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
      *                                  longDescription:
      *                                      type: string
@@ -99,8 +107,7 @@ module.exports = app => {
      *      get:
      *          tags:
      *          - books
-     *          summary: Retrieve a single book by ID.
-     *          description: Retrieve a single book by ID
+     *          summary: Retrieve the book by ID.
      *          parameters:
      *            - in: path
      *              name: id
@@ -110,15 +117,18 @@ module.exports = app => {
      *              description: Numeric ID of the book to get
      *          responses:
      *              200:
-     *                  description: Numeric ID of the book to get
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - title
+     *                                - isbn
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The book ID
+     *                                      description: The auto-generated ID of the book.
      *                                      example: 1
      *                                  title:
      *                                      type: string
@@ -134,7 +144,7 @@ module.exports = app => {
      *                                      example: 416
      *                                  shortDescription:
      *                                      type: string
-     *                                      description: The book short description
+     *                                      description: The book short description.
      *                                      example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
      *                                  longDescription:
      *                                      type: string
@@ -144,8 +154,8 @@ module.exports = app => {
      *                                      type: string
      *                                      description: The book published date.
      *                                      example: 2009-04-01T07:00:00.000Z
-     *              204:
-     *                  description: No Content
+     *              404:
+     *                  description: Not found
      */
 
     router.get("/:id", books.findOne)
@@ -157,13 +167,15 @@ module.exports = app => {
      *          tags:
      *          - books
      *          summary: Add a new book to the database.
-     *          description: Add a new book to the database
      *          requestBody:
      *              required: true
      *              content:
      *                  application/json:
      *                      schema:
      *                          type: object
+     *                          required:
+     *                            - title
+     *                            - isbn
      *                          properties:
      *                              title:
      *                                  type: string
@@ -179,7 +191,7 @@ module.exports = app => {
      *                                  example: 416
      *                              shortDescription:
      *                                  type: string
-     *                                  description: The book short description
+     *                                  description: The book short description.
      *                                  example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
      *                              longDescription:
      *                                  type: string
@@ -191,15 +203,18 @@ module.exports = app => {
      *                                  example: 2009-04-01T07:00:00.000Z
      *          responses:
      *              200:
-     *                  description: Book has been created successfully
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - title
+     *                                - isbn
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The book ID
+     *                                      description: The auto-generated ID of the book.
      *                                      example: 1
      *                                  title:
      *                                      type: string
@@ -215,7 +230,7 @@ module.exports = app => {
      *                                      example: 416
      *                                  shortDescription:
      *                                      type: string
-     *                                      description: The book short description
+     *                                      description: The book short description.
      *                                      example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
      *                                  longDescription:
      *                                      type: string
@@ -226,14 +241,7 @@ module.exports = app => {
      *                                      description: The book published date.
      *                                      example: 2009-04-01T07:00:00.000Z
      *              400:
-     *                  description: Empty content
-     *                  content:
-     *                      application/json:
-     *                          schema:
-     *                              type: object
-     *                              properties:
-     *                                  message:
-     *                                      example: Content can not be empty!
+     *                  description: Invalid input
      */
 
     router.post("/", books.create)
@@ -247,7 +255,6 @@ module.exports = app => {
      *          consumes:
      *            - application/json
      *          summary: Update the book data by ID.
-     *          description: Update the book data by ID
      *          parameters:
      *            - in: path
      *              name: id
@@ -262,21 +269,48 @@ module.exports = app => {
      *                      schema:
      *                          type: object
      *                          properties:
-     *                              name:
+     *                              id:
+     *                                  type: integer
+     *                                  description: The auto-generated ID of the book.
+     *                                  example: 1
+     *                              title:
      *                                  type: string
-     *                                  description: The book name.
+     *                                  description: The book title.
      *                                  example: Unlocking Android
+     *                              isbn:
+     *                                  type: string
+     *                                  description: The book isbn.
+     *                                  example: 1933988673
+     *                              pageCount:
+     *                                  type: integer
+     *                                  description: The book page count.
+     *                                  example: 416
+     *                              shortDescription:
+     *                                  type: string
+     *                                  description: The book short description.
+     *                                  example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
+     *                              longDescription:
+     *                                  type: string
+     *                                  description: The book full description.
+     *                                  example: Android is an open source mobile phone platform based on the Linux operating system and developed by the Open Handset Alliance, a consortium of over 30 hardware, software and telecom companies that focus on open standards for mobile devices. Led by search giant, Google, Android is designed to deliver a better and more open and cost effective mobile experience.    Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical and useful examples throughout. Based on his mobile development experience and his deep knowledge of the arcane Android technical documentation, the author conveys the know-how you need to develop practical applications that build upon or replace any of Androids features, however small.    Unlocking Android - A Developer's Guide prepares the reader to embrace the platform in easy-to-understand language and builds on this foundation with re-usable Java code examples. It is ideal for corporate and hobbyists alike who have an interest, or a mandate, to deliver software functionality for cell phones.    WHAT'S INSIDE        # Android's place in the market      # Using the Eclipse environment for Android development      # The Intents - how and why they are used      # Application classes            o Activity            o Service            o IntentReceiver       # User interface design      # Using the ContentProvider to manage data      # Persisting data with the SQLite database      # Networking examples      # Telephony applications      # Notification methods      # OpenGL, animation & multimedia      # Sample Applications
+     *                              publishedDate:
+     *                                  type: string
+     *                                  description: The book published date.
+     *                                  example: 2009-04-01T07:00:00.000Z
      *          responses:
      *              200:
-     *                  description: Numeric ID of the book to update
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
+     *                              required:
+     *                                - title
+     *                                - isbn
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The book ID
+     *                                      description: The auto-generated ID of the book.
      *                                      example: 1
      *                                  title:
      *                                      type: string
@@ -292,7 +326,7 @@ module.exports = app => {
      *                                      example: 416
      *                                  shortDescription:
      *                                      type: string
-     *                                      description: The book short description
+     *                                      description: The book short description.
      *                                      example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
      *                                  longDescription:
      *                                      type: string
@@ -302,6 +336,10 @@ module.exports = app => {
      *                                      type: string
      *                                      description: The book published date.
      *                                      example: 2009-04-01T07:00:00.000Z
+     *              400:
+     *                  description: Invalid input
+     *              404:
+     *                  description: Not found
      */
 
     router.put("/:id", books.update)
@@ -312,8 +350,7 @@ module.exports = app => {
      *      delete:
      *          tags:
      *          - books
-     *          summary: Retrieve a single book by ID.
-     *          description: Retrieve a single book by ID
+     *          summary: Delete the book by ID.
      *          parameters:
      *            - in: path
      *              name: id
@@ -323,57 +360,18 @@ module.exports = app => {
      *              description: Numeric ID of the book to get
      *          responses:
      *              200:
-     *                  description: Book deleted successfully
+     *                  description: Success
      *                  content:
      *                      application/json:
      *                          schema:
-     *                              type: object
-     *                              properties:
-     *                                  message:
-     *                                      type: string
-     *                                      description: HTTP status.
-     *                                      example: Book deleted successfully.
-     *              500:
-     *                  description: Some error occurred while deleting the book
-     *                  content:
-     *                      application/json:
-     *                          schema:
-     *                              type: object
-     *                              properties:
-     *                                  message:
-     *                                      type: string
-     *                                      description: HTTP status.
-     *                                      example: Some error occurred while deleting the book.
-     */
-
-    router.delete("/:id", books.delete)
-
-    /**
-     * @swagger
-     * /api/books/findAllByTitle/{title}:
-     *      get:
-     *          tags:
-     *          - books
-     *          summary: Retrieve a book(s) by title.
-     *          description: Retrieve a book(s) by title
-     *          parameters:
-     *            - in: path
-     *              name: title
-     *              schema:
-     *                  type: string
-     *              required: true
-     *              description: Book(s) to get by title
-     *          responses:
-     *              200:
-     *                  description: Book(s) to get
-     *                  content:
-     *                      application/json:
-     *                          schema:
+     *                              required:
+     *                                - title
+     *                                - isbn
      *                              type: object
      *                              properties:
      *                                  id:
      *                                      type: integer
-     *                                      description: The book ID
+     *                                      description: The auto-generated ID of the book.
      *                                      example: 1
      *                                  title:
      *                                      type: string
@@ -389,7 +387,7 @@ module.exports = app => {
      *                                      example: 416
      *                                  shortDescription:
      *                                      type: string
-     *                                      description: The book short description
+     *                                      description: The book short description.
      *                                      example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
      *                                  longDescription:
      *                                      type: string
@@ -399,8 +397,67 @@ module.exports = app => {
      *                                      type: string
      *                                      description: The book published date.
      *                                      example: 2009-04-01T07:00:00.000Z
-     *              204:
-     *                  description: No Content
+     *              404:
+     *                  description: Not found
+     */
+
+    router.delete("/:id", books.delete)
+
+    /**
+     * @swagger
+     * /api/books/findAllByTitle/{title}:
+     *      get:
+     *          tags:
+     *          - books
+     *          summary: Retrieve book(s) by title.
+     *          parameters:
+     *            - in: path
+     *              name: title
+     *              schema:
+     *                  type: string
+     *              required: true
+     *              description: Book(s) to get by title
+     *          responses:
+     *              200:
+     *                  description: Success
+     *                  content:
+     *                      application/json:
+     *                          schema:
+     *                              required:
+     *                                - title
+     *                                - isbn
+     *                              type: object
+     *                              properties:
+     *                                  id:
+     *                                      type: integer
+     *                                      description: The auto-generated ID of the book.
+     *                                      example: 1
+     *                                  title:
+     *                                      type: string
+     *                                      description: The book title.
+     *                                      example: Unlocking Android
+     *                                  isbn:
+     *                                      type: string
+     *                                      description: The book isbn.
+     *                                      example: 1933988673
+     *                                  pageCount:
+     *                                      type: integer
+     *                                      description: The book page count.
+     *                                      example: 416
+     *                                  shortDescription:
+     *                                      type: string
+     *                                      description: The book short description.
+     *                                      example: Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical a
+     *                                  longDescription:
+     *                                      type: string
+     *                                      description: The book full description.
+     *                                      example: Android is an open source mobile phone platform based on the Linux operating system and developed by the Open Handset Alliance, a consortium of over 30 hardware, software and telecom companies that focus on open standards for mobile devices. Led by search giant, Google, Android is designed to deliver a better and more open and cost effective mobile experience.    Unlocking Android - A Developer's Guide provides concise, hands-on instruction for the Android operating system and development tools. This book teaches important architectural concepts in a straightforward writing style and builds on this with practical and useful examples throughout. Based on his mobile development experience and his deep knowledge of the arcane Android technical documentation, the author conveys the know-how you need to develop practical applications that build upon or replace any of Androids features, however small.    Unlocking Android - A Developer's Guide prepares the reader to embrace the platform in easy-to-understand language and builds on this foundation with re-usable Java code examples. It is ideal for corporate and hobbyists alike who have an interest, or a mandate, to deliver software functionality for cell phones.    WHAT'S INSIDE        # Android's place in the market      # Using the Eclipse environment for Android development      # The Intents - how and why they are used      # Application classes            o Activity            o Service            o IntentReceiver       # User interface design      # Using the ContentProvider to manage data      # Persisting data with the SQLite database      # Networking examples      # Telephony applications      # Notification methods      # OpenGL, animation & multimedia      # Sample Applications
+     *                                  publishedDate:
+     *                                      type: string
+     *                                      description: The book published date.
+     *                                      example: 2009-04-01T07:00:00.000Z
+     *              404:
+     *                  description: Not found
      */
 
     router.get("/findAllByTitle/:name", books.findAllByName)

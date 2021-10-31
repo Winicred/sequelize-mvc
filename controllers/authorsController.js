@@ -1,5 +1,6 @@
 const Author = require("../models/author")
 const {Op} = require("sequelize");
+const Category = require("../models/category");
 
 exports.findAll = (req, res) => {
     Author.findAll().then(data => {
@@ -56,32 +57,29 @@ exports.update = (req, res) => {
     }
 
     Author.update({name: req.body.name}, {where: {id: req.params.id}}).then(() => {
-        if (res.statusCode === 200) {
-            res.status(200).send({message: "Author updated successfully."})
-        } else {
-            res.status(500).send({message: "Some error occurred while updating the author."})
-        }
+        Author.findOne({where: {id: req.params.id}}).then(data => {
+            res.send(data)
+        })
     }).catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occurred while creating the new author."
+            message: err.message || "Some error occurred while updating the author."
         })
     })
 }
 
 exports.delete = (req, res) => {
-    Author.destroy({where: {id: req.params.id}})
-        .then(data => {
-            if (data === 1) {
-                res.status(200).send({message: "Author deleted successfully."})
-            } else {
-                res.status(500).send({message: "Some error occurred while deleting the author."})
-            }
+    Author.findOne({where: {id: req.params.id}}).then(data => {
+        Author.destroy({where: {id: req.params.id}})
+        if (data !== null) {
+            res.send(data)
+        } else {
+            res.status(404).send()
+        }
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while deleting the author."
         })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while deleting the author."
-            })
-        })
+    })
 }
 
 exports.findAllByName = (req, res) => {
