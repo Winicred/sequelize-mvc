@@ -7,8 +7,8 @@ const Author = require("./models/author")
 const BookAuthors = require("./models/book_author")
 const BookCategories = require("./models/book_category")
 
-// createTables()
-readData()
+createTables()
+// readData()
 
 async function createTables(){
     await db.sync({ force: true })
